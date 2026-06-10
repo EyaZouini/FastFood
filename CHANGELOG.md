@@ -5,6 +5,21 @@
 
 ---
 
+## [2026-06-10] Subtask 1.5 — Admin Dashboard
+**Branch:** `feature/subtask-1.5-admin-dashboard` | **PR:** #6  
+**Files touched:** `Controllers/AdminController.cs` (new), `Services/IDashboardService.cs` (new), `Services/DashboardService.cs` (new), `ViewModels/DashboardViewModel.cs` (new), `Views/Admin/Dashboard.cshtml` (new), `FastFood.Tests/Services/DashboardServiceTests.cs` (new), `Program.cs`, `Views/Shared/_Layout.cshtml`
+
+### What changed
+- **`IDashboardService` / `DashboardService`:** computes revenue today/this month/total, total order count, orders today, orders-per-day for last 7 days, and top 5 most ordered items
+- **`AdminController`:** single `Dashboard()` action at `/Admin/Dashboard`, restricted to `Admin` role
+- **`Views/Admin/Dashboard.cshtml`:** KPI cards (revenue, order counts) + Chart.js bar chart (orders/day) + horizontal bar chart (top items)
+- **`_Layout.cshtml`:** Dashboard link added to Admin nav menu
+- **`Program.cs`:** `IDashboardService` registered as scoped
+- **5 new tests:** revenue today, total orders, orders today, 7-day window size, top item aggregation
+- **Build:** 0 errors ✅ | **Tests:** 24/24 passing ✅
+
+---
+
 ## [2026-06-10] Subtask 1.4 — Service Layer
 **Branch:** `feature/subtask-1.4-service-layer`  
 **Files touched:** `Services/` (6 new files), `Controllers/HomeController.cs`, `Controllers/CartsController.cs`, `Controllers/OrdersController.cs`, `Controllers/ItemsController.cs`, `Program.cs`, `FastFood.Tests/Services/` (2 new test files)

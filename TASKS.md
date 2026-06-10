@@ -20,13 +20,7 @@
 **Status:** ✅ Done → see CHANGELOG.md
 
 ### Subtask 1.5 — Admin Dashboard (New Feature)
-**Status:** 🔄 In progress
-
-- [ ] Orders per day chart
-- [ ] Most popular items
-- [ ] Revenue summary
-- [ ] Accessible at `/Admin/Dashboard`
-- [ ] Run tests ✅
+**Status:** ✅ Done → see CHANGELOG.md
 
 ---
 
