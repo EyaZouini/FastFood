@@ -5,6 +5,24 @@
 
 ---
 
+## [2026-06-10] Subtask 1.2 — Test Project Setup
+**Branch:** `feature/subtask-1.2-test-setup`  
+**Files touched:** `FastFood.Tests/` (new project), `FastFood.csproj`, `FastFood.sln`
+
+### What changed
+- Created `FastFood.Tests` xUnit project inside the repo
+- Added to `FastFood.sln`
+- Installed packages: `Moq 4.20.72`, `Microsoft.EntityFrameworkCore.InMemory 9.0.0`
+- Added project reference to main `FastFood.csproj`
+- Excluded `FastFood.Tests/` from main project compilation (SDK wildcard fix)
+- **9 tests written and passing:**
+  - `ClaimsHelperTests` — 3 tests (returns userId, empty string on missing claim, empty string on null identity)
+  - `ItemValidationTests` — 2 tests (valid item, zero price allowed)
+  - `CouponValidationTests` — 2 tests (valid coupon, IsActive defaults to false)
+  - `OrderHeaderValidationTests` — 2 tests (total calculation, nullable optional fields)
+
+---
+
 ## [2026-06-10] Subtask 1.1 — Security & Quality Fixes
 **Commit:** `0e4bdea`  
 **Files touched:** `Controllers/CouponsController.cs`, `Controllers/UsersController.cs`, `Controllers/HomeController.cs`, `Controllers/CartsController.cs`, `Controllers/OrdersController.cs`, `Data/ApplicationDbContext.cs`, `Utility/ClaimsHelper.cs`
