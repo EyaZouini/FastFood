@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace FastFood.Models
 {
@@ -6,12 +6,11 @@ namespace FastFood.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Title { get; set; }
-        public string Type { get; set; }
+        public required string Title { get; set; }
+        public required string Type { get; set; }
         public double Discount { get; set; }
         public double MinimumAmount { get; set; }
-        public byte[] CouponPicture { get; set; }
+        public byte[] CouponPicture { get; set; } = Array.Empty<byte>();
         public bool IsActive { get; set; }
     }
-
 }

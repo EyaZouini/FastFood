@@ -5,6 +5,21 @@
 
 ---
 
+## [2026-06-10] Subtask 1.3 — Fix Nullable Warnings
+**Branch:** `feature/subtask-1.3-nullable-fixes`  
+**Files touched:** All 7 models, 3 ViewModels, `Controllers/CartsController.cs`
+
+### What changed
+- **Models** — applied `required` to mandatory string properties (`Name`, `Title`, `Description`, `Phone`, etc.) and `= null!` to EF navigation properties loaded via `Include` (`Item`, `SubCategory`, `ApplicationUser`, `OrderHeader`, `Category`)
+- **`Coupon.CouponPicture`** — defaulted to `Array.Empty<byte>()` instead of null
+- **`CouponViewModel.CouponPicture`** — changed to `IFormFile?` (optional on edit)
+- **ViewModels** — `= null!` on required references, `= new()` on `ListofCart`
+- **`CartsController.Summary`** — refactored to load user first, then build the full `OrderHeader` in a single initializer (also fixes a N+1 query)
+- **Build result:** 0 errors, 0 warnings ✅
+- **Tests:** 9/9 passing ✅
+
+---
+
 ## [2026-06-10] Subtask 1.2 — Test Project Setup
 **Branch:** `feature/subtask-1.2-test-setup`  
 **Files touched:** `FastFood.Tests/` (new project), `FastFood.csproj`, `FastFood.sln`

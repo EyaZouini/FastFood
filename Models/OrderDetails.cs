@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace FastFood.Models
@@ -9,13 +9,13 @@ namespace FastFood.Models
         public int Id { get; set; }
         public int OrderHeaderId { get; set; }
         [ValidateNever]
-        public OrderHeader OrderHeader { get; set; }
+        public OrderHeader OrderHeader { get; set; } = null!;
         public int ItemId { get; set; }
         [ValidateNever]
-        public Item Item { get; set; }
+        public Item Item { get; set; } = null!;
         public int Count { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public required string Name { get; set; }
+        public required string Description { get; set; }
         public double Price { get; set; }
     }
 }

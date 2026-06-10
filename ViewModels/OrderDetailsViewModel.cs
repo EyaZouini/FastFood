@@ -1,4 +1,4 @@
-﻿using FastFood.Models;
+using FastFood.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FastFood.ViewModels
@@ -6,7 +6,7 @@ namespace FastFood.ViewModels
     [Keyless]
     public class OrderDetailsViewModel
     {
-        public OrderHeader OrderHeader { get; set; }
-        public  IEnumerable<OrderDetails> OrderDetails { get; set; }
+        public OrderHeader OrderHeader { get; set; } = null!;
+        public IEnumerable<OrderDetails> OrderDetails { get; set; } = null!;
     }
 }

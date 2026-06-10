@@ -14,13 +14,7 @@
 **Status:** ✅ Done → see CHANGELOG.md
 
 ### Subtask 1.3 — Fix Nullable Warnings
-**Status:** 🔲 Not started  
-**Files:** `Models/`, `ViewModels/`
-
-- [ ] Add `required` or `?` to all non-nullable string properties in Models
-- [ ] Fix nullable warnings in ViewModels
-- [ ] Build must reach 0 warnings
-- [ ] Run tests ✅
+**Status:** ✅ Done → see CHANGELOG.md
 
 ### Subtask 1.4 — Service Layer (Repository Pattern)
 **Status:** 🔲 Not started  
