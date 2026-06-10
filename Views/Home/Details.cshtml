@@ -18,7 +18,8 @@
                 <div class="row mb-3">
                     <!-- Image Placeholder -->
                     <div class="col-2 d-flex justify-content-center align-items-center">
-                        <img src="@Model.Item.ImageUrl" class="img-fluid rounded-circle" alt="Product Image" />
+                        <img src="@Model.Item.ImageUrl" class="img-fluid rounded-circle" alt="@Model.Item.Title"
+                             onerror="this.onerror=null;this.src='https://placehold.co/200x200/f8f9fa/adb5bd?text=No+Image'" />
                     </div>
 
                     <div class="col-10">
