@@ -17,16 +17,7 @@
 **Status:** ✅ Done → see CHANGELOG.md
 
 ### Subtask 1.4 — Service Layer (Repository Pattern)
-**Status:** 🔲 Not started  
-**Files:** New: `Services/`, `Interfaces/` — Refactor: CartsController, OrdersController, HomeController
-
-- [ ] Create `IItemService` + `ItemService`
-- [ ] Create `IOrderService` + `OrderService`
-- [ ] Create `ICartService` + `CartService`
-- [ ] Register services via DI in `Program.cs`
-- [ ] Refactor controllers to use services (no direct DbContext access)
-- [ ] Write service unit tests using InMemory DB
-- [ ] Run tests ✅
+**Status:** ✅ Done → see CHANGELOG.md
 
 ### Subtask 1.5 — Admin Dashboard (New Feature)
 **Status:** 🔲 Not started

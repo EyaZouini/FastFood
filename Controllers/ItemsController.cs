@@ -1,198 +1,100 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using FastFood.Models;
+using FastFood.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FastFood.Data;
-using FastFood.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace FastFood.Controllers
 {
     [Authorize(Roles = "Admin,Manager")]
     public class ItemsController : Controller
     {
+        private readonly IItemService _itemService;
         private readonly ApplicationDbContext _context;
-        private IWebHostEnvironment _webHostEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ItemsController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public ItemsController(IItemService itemService, ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
+            _itemService = itemService;
             _context = context;
             _webHostEnvironment = webHostEnvironment;
         }
 
-        // GET: Items
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.Items.Include(i => i.SubCategory);
-            return View(await applicationDbContext.ToListAsync());
-        }
+        public async Task<IActionResult> Index() =>
+            View(await _itemService.GetAllAsync());
 
-        // GET: Items/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var item = await _context.Items
-                .Include(i => i.SubCategory)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            return View(item);
+            if (id == null) return NotFound();
+            var item = await _itemService.GetByIdAsync(id.Value);
+            return item == null ? NotFound() : View(item);
         }
 
-        // GET: Items/Create
         public IActionResult Create()
         {
             ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "Id", "Title");
             return View();
         }
 
-        // POST: Items/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,Price,SubCategoryId")] Item item, IFormFile imageFile)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                if (imageFile != null)
-                {
-                    var uploadDir = @"images/";
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-                    var filePath = Path.Combine(_webHostEnvironment.WebRootPath,uploadDir, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await imageFile.CopyToAsync(stream);
-                    }
-
-                    item.ImageUrl = "/" + uploadDir + "/" + fileName;
-                }
-
-                _context.Add(item);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "Id", "Title", item.SubCategoryId);
+                return View(item);
             }
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "Id", "Title", item.SubCategoryId);
-            return View(item);
+            await _itemService.CreateAsync(item, imageFile, _webHostEnvironment.WebRootPath);
+            return RedirectToAction(nameof(Index));
         }
 
-
-        // GET: Items/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var item = await _context.Items.FindAsync(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
+            var item = await _itemService.GetByIdAsync(id.Value);
+            if (item == null) return NotFound();
             ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "Id", "Title", item.SubCategoryId);
             return View(item);
         }
 
-        // POST: Items/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Price,SubCategoryId")] Item item, IFormFile imageFile)
         {
-            if (id != item.Id)
+            if (id != item.Id) return NotFound();
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "Id", "Title", item.SubCategoryId);
+                return View(item);
             }
-
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    if (imageFile != null)
-                    {
-                        var uploadDir = @"images/";
-                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-                        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, uploadDir, fileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await imageFile.CopyToAsync(stream);
-                        }
-
-                        item.ImageUrl = "/" + uploadDir + "/" + fileName;
-                    }
-
-                    _context.Update(item);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ItemExists(item.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _itemService.UpdateAsync(item, imageFile, _webHostEnvironment.WebRootPath);
             }
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "Id", "Title", item.SubCategoryId);
-            return View(item);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await _itemService.ExistsAsync(item.Id)) return NotFound();
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
-
-        // GET: Items/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var item = await _context.Items
-                .Include(i => i.SubCategory)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-
-            return View(item);
+            if (id == null) return NotFound();
+            var item = await _itemService.GetByIdAsync(id.Value);
+            return item == null ? NotFound() : View(item);
         }
 
-        // POST: Items/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var item = await _context.Items.FindAsync(id);
-            if (item != null)
-            {
-                _context.Items.Remove(item);
-            }
-
-            await _context.SaveChangesAsync();
+            await _itemService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ItemExists(int id)
-        {
-            return _context.Items.Any(e => e.Id == id);
         }
     }
 }
