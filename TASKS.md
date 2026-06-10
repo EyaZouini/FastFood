@@ -29,3 +29,8 @@
 
 ## Task 2.2 — Full DB Seed + Image Fixes
 **Status:** ✅ Done → see CHANGELOG.md
+
+---
+
+## Task 3 — UI Redesign
+**Status:** ✅ Done → see CHANGELOG.md

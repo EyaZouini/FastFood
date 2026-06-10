@@ -5,6 +5,22 @@
 
 ---
 
+## [2026-06-10] Task 3 — UI Redesign (clean minimal theme, forest green accent)
+**Branch:** `feature/task-3-ui-redesign` | **PR:** #9  
+**Files touched:** `wwwroot/css/site.css` (full rewrite), `Views/Shared/_Layout.cshtml`, `Views/Shared/_LoginPartial.cshtml`, and 13 view files across Home, Carts, Orders, Admin, Items, Categories, SubCategories, Coupons, Users
+
+### What changed
+- **Design system (`site.css`):** CSS custom properties (`--ff-primary #16A34A`, `--ff-bg #F9FAFB`, `--ff-card white`, etc.), Bootstrap primary color override (all buttons/links/focus rings now green), ~20 shared utility classes; all per-page `<style>` blocks removed
+- **Layout:** white navbar (`ff-navbar`) with green brand and gray pill-hover links; dark footer (`ff-footer`) with 3-column layout (HTML was broken — fixed unclosed tags); removed hardcoded `text-white` from `_LoginPartial`
+- **Home (Index + Details):** responsive `row-cols` food card grid with `ff-food-card` hover lift; two-column detail page (image left, form card right); empty state message
+- **Cart + Summary:** `ff-table` with 44px rounded thumbnails (`ff-cart-thumb`); `ff-summary-box` order total at bottom-right; Summary page was bare HTML — full two-column rewrite
+- **Orders (Index + Detail):** color-coded `ff-badge` status badges (Shipped/Approved/InProcess/Pending/Cancelled); filter buttons; receipt card layout with `dl/dt` info
+- **Admin Dashboard:** KPI icon pills with color-coded backgrounds (`ff-kpi-icon-green/blue/amber/purple`); Chart.js bar charts with green palette
+- **All admin CRUD views (Items, Categories, SubCategories, Coupons, Users):** consistent `ff-table-wrap` + `ff-table` + outline action buttons; Items fixed to show `SubCategory.Title` instead of ID; Coupons use `ff-badge-active/inactive` instead of raw boolean
+- **Build:** 0 errors ✅ | **Tests:** 34/34 passing ✅
+
+---
+
 ## [2026-06-10] Task 2.2 — Full DB Seed + Image Fixes
 **Branch:** `feature/task-2.2-orders-and-image-fixes` | **PR:** #8  
 **Files touched:** `Data/OrderSeeder.cs` (new), `Data/DbInitializer.cs`, `Data/seed/food-items.csv`, `FastFood.Tests/Data/OrderSeederTests.cs` (new), `Views/Home/Index.cshtml`, `Views/Home/Details.cshtml`
