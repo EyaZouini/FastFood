@@ -25,7 +25,7 @@
 ---
 
 ## Task 2 — Data Seeding (Scraping + CSV)
-**Status:** 🔲 Not started
+**Status:** 🔄 In progress
 
 - [ ] Scrape food item images (mix: international + Tunisian)
 - [ ] Build CSV: Title, Description, Price, Category, SubCategory, ImageUrl

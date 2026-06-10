@@ -1,5 +1,6 @@
 ﻿using FastFood.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting;
 
 namespace FastFood.Data
 {
@@ -9,16 +10,14 @@ namespace FastFood.Data
         {
             using var scope = serviceProvider.CreateScope();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>(); // Use ApplicationUser here
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
             // Seed roles
             var roles = new[] { "Admin", "Manager", "Customer" };
             foreach (var role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))
-                {
                     await roleManager.CreateAsync(new IdentityRole(role));
-                }
             }
 
             // Seed default admin user
@@ -30,7 +29,7 @@ namespace FastFood.Data
                     UserName = adminEmail,
                     Email = adminEmail,
                     EmailConfirmed = true,
-                    Name= "Admin Name",
+                    Name = "Admin Name",
                     Address = "Default Admin Address",
                     City = "Default Admin City",
                     PostalCode = "Default Admin Postal Code"
@@ -38,10 +37,15 @@ namespace FastFood.Data
 
                 var result = await userManager.CreateAsync(adminUser, "Admin@123");
                 if (result.Succeeded)
-                {
                     await userManager.AddToRoleAsync(adminUser, "Admin");
-                }
             }
+
+            // Seed food items from CSV
+            var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var csvPath = Path.Combine(env.ContentRootPath, "Data", "seed", "food-items.csv");
+            if (File.Exists(csvPath))
+                await CsvSeeder.SeedFromCsvAsync(db, csvPath);
         }
     }
 }
