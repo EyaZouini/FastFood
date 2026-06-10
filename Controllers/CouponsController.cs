@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using FastFood.ViewModels;
 
 namespace FastFood.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CouponsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -69,16 +71,13 @@ namespace FastFood.Controllers
                 };
 
                 var files = Request.Form.Files;
-                byte[] photo = null;
-                using (var fileStream = files[0].OpenReadStream())
+                if (files.Count > 0)
                 {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        fileStream.CopyTo(memoryStream);
-                        photo = memoryStream.ToArray();
-                    }
+                    using var fileStream = files[0].OpenReadStream();
+                    using var memoryStream = new MemoryStream();
+                    fileStream.CopyTo(memoryStream);
+                    coupon.CouponPicture = memoryStream.ToArray();
                 }
-                coupon.CouponPicture = photo;  
                 _context.Coupons.Add(coupon);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -135,16 +134,18 @@ namespace FastFood.Controllers
                     IsActive = model.IsActive
                 };
                 var files = Request.Form.Files;
-                byte[] photo = null;
-                using (var fileStream = files[0].OpenReadStream())
+                if (files.Count > 0)
                 {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        fileStream.CopyTo(memoryStream);
-                        photo = memoryStream.ToArray();
-                    }
+                    using var fileStream = files[0].OpenReadStream();
+                    using var memoryStream = new MemoryStream();
+                    fileStream.CopyTo(memoryStream);
+                    coupon.CouponPicture = memoryStream.ToArray();
                 }
-                coupon.CouponPicture = photo;
+                else
+                {
+                    var existing = await _context.Coupons.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+                    coupon.CouponPicture = existing?.CouponPicture ?? Array.Empty<byte>();
+                }
 
                 try
                 {

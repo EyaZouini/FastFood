@@ -1,11 +1,10 @@
 ﻿using FastFood.Data;
 using FastFood.Models;
+using FastFood.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Security.Claims;
 
 namespace FastFood.Controllers
 {
@@ -24,9 +23,8 @@ namespace FastFood.Controllers
 
         public IActionResult Index()
         {
-            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var users = _context.ApplicationUsers.Where(x => x.Id != claim.Value).ToList();
+            var userId = ClaimsHelper.GetUserId(User);
+            var users = _context.ApplicationUsers.Where(x => x.Id != userId).ToList();
             return View(users);
         }
 
@@ -117,14 +115,14 @@ namespace FastFood.Controllers
         // POST: Users/Delete/{id}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var user = _context.ApplicationUsers.FirstOrDefault(u => u.Id == id);
             if (user == null)
                 return NotFound();
 
             _context.ApplicationUsers.Remove(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

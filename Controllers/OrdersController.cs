@@ -5,7 +5,6 @@ using FastFood.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace FastFood.Controllers
 {
@@ -29,9 +28,8 @@ namespace FastFood.Controllers
             }
             else
             {
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
-                var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                order = _context.OrderHeaders.Where(x => x.ApplicationUserId == claims.Value);
+                var userId = ClaimsHelper.GetUserId(User);
+                order = _context.OrderHeaders.Where(x => x.ApplicationUserId == userId);
             }
             switch (status)
             {
@@ -76,12 +74,10 @@ namespace FastFood.Controllers
             }
             if (ModelState.IsValid)
             {
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
-                var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                // Create Order Header
+                var userId = ClaimsHelper.GetUserId(User);
                 var header = new OrderHeader
                 {
-                    ApplicationUser = _context.ApplicationUsers.Where(x => x.Id == claims.Value).FirstOrDefault(),
+                    ApplicationUser = _context.ApplicationUsers.Where(x => x.Id == userId).FirstOrDefault(),
                     Name = order.OrderHeader.Name,
                     Phone = order.OrderHeader.Phone,
                     TimeOfPick = DateTime.Now.AddHours(1),
@@ -116,8 +112,7 @@ namespace FastFood.Controllers
                 // Save all changes to the database in one operation
                 await _context.SaveChangesAsync();
 
-                // Clear the Cart
-                var userCart = _context.Carts.Where(c => c.ApplicationUserId == claims.Value);
+                var userCart = _context.Carts.Where(c => c.ApplicationUserId == userId);
                 _context.Carts.RemoveRange(userCart);
                 await _context.SaveChangesAsync();
 

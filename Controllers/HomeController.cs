@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using System.Security.Claims;
 using FastFood.Data;
 using FastFood.Models;
+using FastFood.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +25,7 @@ namespace FastFood.Controllers
 
             if (!string.IsNullOrEmpty(searchQuery))
             {
-                // Convertir les deux côtés en minuscules pour comparer sans tenir compte de la casse
+                // Convertir les deux cï¿½tï¿½s en minuscules pour comparer sans tenir compte de la casse
                 items = items.Where(i => i.Title.ToLower().Contains(searchQuery.ToLower()));
             }
 
@@ -35,7 +35,8 @@ namespace FastFood.Controllers
 
         public async Task<IActionResult> Details(int Id)
         {
-            var itemFromDb = await _context.Items.Include(i => i.SubCategory).Where(x=>x.Id==Id).FirstOrDefaultAsync();
+            var itemFromDb = await _context.Items.Include(i => i.SubCategory).Where(x => x.Id == Id).FirstOrDefaultAsync();
+            if (itemFromDb == null) return NotFound();
             var cart = new Cart()
             {
                 Item = itemFromDb,
@@ -49,10 +50,7 @@ namespace FastFood.Controllers
         [Authorize]
         public async Task<IActionResult> Details(Cart cart)
         {
-            // Retrieve the logged-in user's ID
-            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            cart.ApplicationUserId = claim.Value;
+            cart.ApplicationUserId = ClaimsHelper.GetUserId(User);
 
             // Check if the model state is valid
             if (!ModelState.IsValid)

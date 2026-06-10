@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FastFood.Data;
 using FastFood.Models;
-using System.Security.Claims;
+using FastFood.Utility;
 using Microsoft.AspNetCore.Authorization;
 using FastFood.ViewModels;
 
@@ -25,17 +25,16 @@ namespace FastFood.Controllers
         [HttpGet]
         public async Task<IActionResult> Summary()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userId = ClaimsHelper.GetUserId(User);
 
             var details = new CartOrderViewModel()
             {
                 ListofCart = _context.Carts.Include(x => x.Item)
-                .Where(x => x.ApplicationUserId == claims.Value).ToList(),
+                .Where(x => x.ApplicationUserId == userId).ToList(),
                 OrderHeader = new OrderHeader()
             };
             details.OrderHeader.ApplicationUser = _context.ApplicationUsers
-                .Where(x => x.Id == claims.Value).FirstOrDefault();
+                .Where(x => x.Id == userId).FirstOrDefault();
             details.OrderHeader.Name = details.OrderHeader.ApplicationUser.Name;
             details.OrderHeader.Phone = details.OrderHeader.ApplicationUser.PhoneNumber;
             details.OrderHeader.TimeOfPick = DateTime.Now.AddHours(1);
@@ -49,13 +48,10 @@ namespace FastFood.Controllers
         // GET: Carts
         public async Task<IActionResult> Index()
         {
-            var claimsIdentity = (ClaimsIdentity)this.User.Identity;
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var currentUserId = claim.Value; // Get the current authenticated user's username (you can adjust this if you are using a different property for identification)
+            var userId = ClaimsHelper.GetUserId(User);
 
-            // Filter carts to display only those belonging to the current user
             var applicationDbContext = _context.Carts
-                .Where(c => c.ApplicationUserId == currentUserId) // Filter by the current user's ID
+                .Where(c => c.ApplicationUserId == userId)
                 .Include(c => c.ApplicationUser)
                 .Include(c => c.Item);
 
