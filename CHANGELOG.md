@@ -5,6 +5,26 @@
 
 ---
 
+## [2026-06-10] Subtask 1.4 — Service Layer
+**Branch:** `feature/subtask-1.4-service-layer`  
+**Files touched:** `Services/` (6 new files), `Controllers/HomeController.cs`, `Controllers/CartsController.cs`, `Controllers/OrdersController.cs`, `Controllers/ItemsController.cs`, `Program.cs`, `FastFood.Tests/Services/` (2 new test files)
+
+### What changed
+- **3 interfaces created:** `IItemService`, `ICartService`, `IOrderService`
+- **3 services created:** `ItemService`, `CartService`, `OrderService` — all business logic extracted from controllers
+- **4 controllers refactored:** now inject services, zero direct DbContext access
+  - `HomeController`: 97 lines → 35 lines
+  - `CartsController`: 225 lines → 55 lines
+  - `OrdersController`: 133 lines → 38 lines
+  - `ItemsController`: image handling moved into `ItemService`
+- **`OrderService`**: replaced N+1 query (was fetching OrderHeader inside a loop) with `OrderHeaderId` assignment
+- **`Program.cs`**: services registered as `AddScoped`
+- **10 new service unit tests:** `CartServiceTests` (5) + `ItemServiceTests` (5)
+- **Build:** 0 errors, 0 warnings ✅
+- **Tests:** 19/19 passing ✅
+
+---
+
 ## [2026-06-10] Subtask 1.3 — Fix Nullable Warnings
 **Branch:** `feature/subtask-1.3-nullable-fixes`  
 **Files touched:** All 7 models, 3 ViewModels, `Controllers/CartsController.cs`

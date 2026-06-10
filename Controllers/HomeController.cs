@@ -1,50 +1,35 @@
 using System.Diagnostics;
-using FastFood.Data;
 using FastFood.Models;
+using FastFood.Services;
 using FastFood.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FastFood.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _context;
+        private readonly IItemService _itemService;
+        private readonly ICartService _cartService;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
-        { 
-            _logger = logger;
-            _context = context;
-        }
-
-        public async Task<IActionResult> Index(string searchQuery)
+        public HomeController(ILogger<HomeController> logger, IItemService itemService, ICartService cartService)
         {
-            var items = _context.Items.Include(i => i.SubCategory).AsQueryable();
-
-            if (!string.IsNullOrEmpty(searchQuery))
-            {
-                // Convertir les deux c�t�s en minuscules pour comparer sans tenir compte de la casse
-                items = items.Where(i => i.Title.ToLower().Contains(searchQuery.ToLower()));
-            }
-
-            return View(await items.ToListAsync());
+            _logger = logger;
+            _itemService = itemService;
+            _cartService = cartService;
         }
 
+        public async Task<IActionResult> Index(string searchQuery) =>
+            View(await _itemService.GetAllAsync(searchQuery));
 
         public async Task<IActionResult> Details(int Id)
         {
-            var itemFromDb = await _context.Items.Include(i => i.SubCategory).Where(x => x.Id == Id).FirstOrDefaultAsync();
-            if (itemFromDb == null) return NotFound();
-            var cart = new Cart()
-            {
-                Item = itemFromDb,
-                ItemId = itemFromDb.Id,
-                Count = 1
-            };
-            return View(cart);
+            var item = await _itemService.GetByIdAsync(Id);
+            if (item == null) return NotFound();
+            return View(new Cart { Item = item, ItemId = item.Id, Count = 1 });
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -52,47 +37,21 @@ namespace FastFood.Controllers
         {
             cart.ApplicationUserId = ClaimsHelper.GetUserId(User);
 
-            // Check if the model state is valid
             if (!ModelState.IsValid)
             {
                 foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
                     _logger.LogError(error.ErrorMessage);
-                }
                 return RedirectToAction("Details", new { id = cart.ItemId });
             }
 
-            // Check if the cart item already exists for the user
-            var cartFromDb = await _context.Carts
-                .FirstOrDefaultAsync(x => x.ApplicationUserId == cart.ApplicationUserId && x.ItemId == cart.ItemId);
-
-            if (cartFromDb == null)
-            {
-                // Add a new cart item if it doesn't exist
-                cart.Id = 0;
-                _context.Carts.Add(cart);  // No need to set the Id manually
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                // Update the quantity if the item already exists in the cart
-                cartFromDb.Count += cart.Count;
-                await _context.SaveChangesAsync();
-            }
-
-            // Redirect to the Index page
+            await _cartService.AddOrUpdateAsync(cart);
             return RedirectToAction("Index");
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        public IActionResult Privacy() => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        public IActionResult Error() =>
+            View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }
