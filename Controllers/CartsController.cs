@@ -27,21 +27,22 @@ namespace FastFood.Controllers
         {
             var userId = ClaimsHelper.GetUserId(User);
 
-            var details = new CartOrderViewModel()
+            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == userId);
+            var carts = await _context.Carts.Include(x => x.Item)
+                .Where(x => x.ApplicationUserId == userId).ToListAsync();
+
+            var details = new CartOrderViewModel
             {
-                ListofCart = _context.Carts.Include(x => x.Item)
-                .Where(x => x.ApplicationUserId == userId).ToList(),
-                OrderHeader = new OrderHeader()
+                ListofCart = carts,
+                OrderHeader = new OrderHeader
+                {
+                    ApplicationUser = user,
+                    Name = user?.Name ?? string.Empty,
+                    Phone = user?.PhoneNumber ?? string.Empty,
+                    TimeOfPick = DateTime.Now.AddHours(1),
+                    OrderTotal = carts.Sum(c => c.Item.Price * c.Count)
+                }
             };
-            details.OrderHeader.ApplicationUser = _context.ApplicationUsers
-                .Where(x => x.Id == userId).FirstOrDefault();
-            details.OrderHeader.Name = details.OrderHeader.ApplicationUser.Name;
-            details.OrderHeader.Phone = details.OrderHeader.ApplicationUser.PhoneNumber;
-            details.OrderHeader.TimeOfPick = DateTime.Now.AddHours(1);
-            foreach(var cart in details.ListofCart)
-            {
-                details.OrderHeader.OrderTotal += (cart.Item.Price * cart.Count);
-            }
 
             return View(details);
         }

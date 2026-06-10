@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace FastFood.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public string Name { get; set; }
-        public string City { get; set; }
-        public string Address { get; set; }
-        public string PostalCode { get; set; }
+        public required string Name { get; set; }
+        public required string City { get; set; }
+        public required string Address { get; set; }
+        public required string PostalCode { get; set; }
     }
 }
