@@ -1,6 +1,6 @@
 using FastFood.Services;
 using FastFood.Utility;
-using FastFood.ViewModels;
+using FastFood.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

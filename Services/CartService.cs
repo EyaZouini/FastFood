@@ -1,6 +1,6 @@
 using FastFood.Data;
 using FastFood.Models;
-using FastFood.ViewModels;
+using FastFood.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace FastFood.Services

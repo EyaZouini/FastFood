@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FastFood.Data;
 using FastFood.Models;
-using FastFood.ViewModels;
+using FastFood.Models.ViewModels;
 
 namespace FastFood.Controllers
 {

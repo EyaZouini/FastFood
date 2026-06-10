@@ -1,4 +1,4 @@
-namespace FastFood.ViewModels
+namespace FastFood.Models.ViewModels
 {
     public class DashboardViewModel
     {
@@ -8,11 +8,9 @@ namespace FastFood.ViewModels
         public int TotalOrders { get; set; }
         public int OrdersToday { get; set; }
 
-        // Last 7 days — label + count per day
         public List<string> OrdersPerDayLabels { get; set; } = new();
         public List<int> OrdersPerDayCounts { get; set; } = new();
 
-        // Top 5 most-ordered items — name + total quantity sold
         public List<string> TopItemNames { get; set; } = new();
         public List<int> TopItemCounts { get; set; } = new();
     }

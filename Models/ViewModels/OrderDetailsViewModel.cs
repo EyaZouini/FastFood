@@ -1,12 +1,12 @@
 using FastFood.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace FastFood.ViewModels
+namespace FastFood.Models.ViewModels
 {
     [Keyless]
-    public class CartOrderViewModel
+    public class OrderDetailsViewModel
     {
-        public List<Cart> ListofCart { get; set; } = new();
         public OrderHeader OrderHeader { get; set; } = null!;
+        public IEnumerable<OrderDetails> OrderDetails { get; set; } = null!;
     }
 }

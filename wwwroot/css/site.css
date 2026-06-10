@@ -31,6 +31,13 @@ body {
   background-color: var(--ff-bg);
   color: var(--ff-text);
   margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.ff-main {
+  flex: 1 0 auto;
 }
 
 /* ═══════════════════════════════════════

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FastFood.ViewModels
+namespace FastFood.Models.ViewModels
 {
     public class CouponViewModel
     {

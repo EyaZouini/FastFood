@@ -1,5 +1,5 @@
 using FastFood.Models;
-using FastFood.ViewModels;
+using FastFood.Models.ViewModels;
 
 namespace FastFood.Services
 {
