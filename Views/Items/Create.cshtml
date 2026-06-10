@@ -1,87 +1,50 @@
-﻿@model FastFood.Models.Item
-
+@model FastFood.Models.Item
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Item";
 }
-<h4 class="text-center" style="padding-top: 25px">@ViewData["Title"] Item</h4>
-<hr />
-<div class="row justify-content-center" style="padding-top: 20px;">
-    <div class="col-md-4">
-        <!-- Bordure autour du formulaire avec padding -->
-        <div class="border p-4 rounded">
+
+<div class="ff-page-header">
+    <h1 class="ff-page-title">New Item</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">← Back</a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="ff-form-card">
             <form asp-action="Create" enctype="multipart/form-data">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 <div class="form-group">
-                    <label asp-for="Title" class="control-label"></label>
+                    <label asp-for="Title" class="form-label"></label>
                     <input asp-for="Title" class="form-control" />
-                    <span asp-validation-for="Title" class="text-danger"></span>
+                    <span asp-validation-for="Title" class="text-danger small"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Description" class="control-label"></label>
-                    <input asp-for="Description" class="form-control" />
-                    <span asp-validation-for="Description" class="text-danger"></span>
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="ImageUrl">Image</label>
+                    <label class="form-label">Image</label>
                     <input type="file" name="imageFile" class="form-control" />
                 </div>
-
                 <div class="form-group">
-                    <label asp-for="Price" class="control-label"></label>
+                    <label asp-for="Price" class="form-label"></label>
                     <input asp-for="Price" class="form-control" />
-                    <span asp-validation-for="Price" class="text-danger"></span>
+                    <span asp-validation-for="Price" class="text-danger small"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="SubCategoryId" class="control-label"></label>
-                    <select asp-for="SubCategoryId" class="form-control" asp-items="ViewBag.SubCategoryId"></select>
+                    <label asp-for="SubCategoryId" class="form-label"></label>
+                    <select asp-for="SubCategoryId" class="form-select" asp-items="ViewBag.SubCategoryId"></select>
                 </div>
-                <div class="form-group text-center">
-                    <input type="submit" value="Create" class="btn btn-primary" style="width: 100px;" />
+                <div class="d-flex gap-2 mt-4">
+                    <input type="submit" value="Create" class="btn btn-primary px-4" />
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancel</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<div class="text-center mt-3">
-    <a asp-action="Index" class="btn btn-secondary" style="width: 100px;">Back</a>
-</div>
-
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
-
-<style>
-    body {
-        background-color: #f8f9fa; /* Light gray background */
-        color: #343a40; /* Dark gray text */
-    }
-
-    h4 {
-        font-weight: bold;
-    }
-
-    .form-group {
-        margin-bottom: 1rem;
-    }
-
-    .btn {
-        margin-top: 10px;
-    }
-
-    .btn-primary {
-        width: 120px; /* Fixed width for the create button */
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    /* Ajout d'une bordure autour du formulaire avec coins arrondis */
-    .border {
-        border: 1px solid #343a40; /* Bordure gris foncé */
-        border-radius: 10px; /* Coins arrondis */
-    }
-</style>

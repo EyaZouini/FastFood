@@ -1,114 +1,74 @@
-﻿@model IEnumerable<FastFood.Models.Cart>
-
+@model IEnumerable<FastFood.Models.Cart>
 @{
     ViewData["Title"] = "Cart";
     double totalCartPrice = Model.Sum(item => item.Item.Price * item.Count);
 }
 
-<div class="container mt-4">
-    <h4>@ViewData["Title"]</h4>
-    <hr />
-
-    <table class="table table-striped table-bordered rounded mt-4">
-        <thead class="bg-secondary text-white">
-            <tr>
-                <th>Item</th>
-                <th>Quantity</th>
-                <th>Price (per piece)</th>
-                <th>Total (per item)</th>
-                <th class="text-center">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                double pricePerItem = item.Item.Price * item.Count;
-                <tr>
-                    <!-- Colonne pour la miniature et le titre -->
-                    <td class="align-middle">
-                        <div class="d-flex align-items-center">
-                            <!-- Image miniature -->
-                            <div class="miniature-container me-3">
-                                <img src="@item.Item.ImageUrl" class="circular-image"/>
-                            </div>
-                            <!-- Titre du produit -->
-                            <div>@Html.DisplayFor(modelItem => item.Item.Title)</div>
-                        </div>
-                    </td>
-                    <td class="align-middle">
-                        <form asp-action="UpdateQuantity" method="post" class="d-flex">
-                            <input type="hidden" name="cartId" value="@item.Id" />
-                            <input type="number" name="newQuantity" value="@item.Count" class="form-control w-50" min="1" />
-                            <button type="submit" class="btn btn-sm btn-primary ms-2">Update</button>
-                        </form>
-                    </td>
-                    <td class="align-middle">
-                        @item.Item.Price.ToString("C") <!-- Prix unitaire formaté -->
-                    </td>
-                    <td class="align-middle">
-                        @pricePerItem.ToString("C") <!-- Total par produit -->
-                    </td>
-                    <td class="text-center align-middle">
-                        <!-- Actions buttons -->
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-secondary" style="width: 80px;">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <!-- Total du panier -->
-    <div class="d-flex justify-content-between align-items-center mt-4">
-        <h5 class="fw-bold">Total Cart Price: @totalCartPrice.ToString("C")</h5>
-        <a asp-action="Summary" class="btn btn-primary btn-lg">Commander</a>
-    </div>
+<div class="ff-page-header">
+    <h1 class="ff-page-title"><i class="fas fa-shopping-cart me-2"></i>My Cart</h1>
 </div>
 
-<style>
-    body {
-        background-color: #f8f9fa; /* Fond gris clair */
-        color: #343a40; /* Texte gris foncé */
-    }
+@if (!Model.Any())
+{
+    <div class="ff-summary-box text-center py-5">
+        <i class="fas fa-shopping-basket fa-3x text-muted mb-3 d-block"></i>
+        <p class="text-muted mb-3">Your cart is empty.</p>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Browse Menu</a>
+    </div>
+}
+else
+{
+    <div class="ff-table-wrap mb-4">
+        <table class="table ff-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Unit Price</th>
+                    <th>Subtotal</th>
+                    <th class="text-center">Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    double subtotal = item.Item.Price * item.Count;
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="@item.Item.ImageUrl" class="ff-cart-thumb" alt="@item.Item.Title"
+                                     onerror="this.onerror=null;this.src='https://placehold.co/44x44/f3f4f6/adb5bd?text=?'" />
+                                <span class="fw-500">@item.Item.Title</span>
+                            </div>
+                        </td>
+                        <td>
+                            <form asp-action="UpdateQuantity" method="post" class="d-flex align-items-center gap-2">
+                                <input type="hidden" name="cartId" value="@item.Id" />
+                                <input type="number" name="newQuantity" value="@item.Count"
+                                       class="form-control form-control-sm" style="width:70px;" min="1" />
+                                <button type="submit" class="btn btn-outline-primary btn-sm">Update</button>
+                            </form>
+                        </td>
+                        <td>$@item.Item.Price.ToString("0.00")</td>
+                        <td class="fw-600">$@subtotal.ToString("0.00")</td>
+                        <td class="text-center">
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm btn-action">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
-    h4 {
-        font-weight: bold;
-    }
-
-    .table {
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .btn {
-        margin-right: 5px;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    /* Miniature de produit */
-    .miniature-container {
-        width: 50px; /* Taille fixe pour la miniature */
-        height: 50px;
-        overflow: hidden;
-        border-radius: 50%; /* Transforme le conteneur en cercle */
-    }
-
-    .circular-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Ajuste l'image pour remplir le conteneur */
-        border: 1px solid #ddd; /* Bordure légère pour l'esthétique */
-        border-radius: 50%; /* Transforme l'image en cercle */
-    }
-
-    .fw-bold {
-        font-weight: bold;
-    }
-
-    .btn-lg {
-        padding: 10px 20px;
-    }
-</style>
+    <div class="d-flex justify-content-end">
+        <div class="ff-summary-box" style="min-width:280px;">
+            <div class="d-flex justify-content-between mb-3">
+                <span class="text-muted">Total</span>
+                <span class="ff-summary-total">$@totalCartPrice.ToString("0.00")</span>
+            </div>
+            <a asp-action="Summary" class="btn btn-primary w-100">Proceed to Order →</a>
+        </div>
+    </div>
+}

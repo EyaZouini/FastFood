@@ -1,68 +1,81 @@
-﻿@model FastFood.ViewModels.CartOrderViewModel
-
+@model FastFood.ViewModels.CartOrderViewModel
 @{
-    ViewData["Title"] = "Summary";
+    ViewData["Title"] = "Order Summary";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Order Summary</h1>
-
-<div>
-    <h2>Items in your cart:</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Item Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var cartItem in Model.ListofCart)
-            {
-                <tr>
-                    <td>@cartItem.Item.Title</td>
-                    <td>@cartItem.Item.Price.ToString("C")</td>
-                    <td>@cartItem.Count</td>
-                    <td>@(cartItem.Item.Price * cartItem.Count)</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <h3>Total Amount: @Model.OrderHeader.OrderTotal.ToString("C")</h3>
+<div class="ff-page-header">
+    <h1 class="ff-page-title">Order Summary</h1>
 </div>
 
-<div>
-    <h2>Order Details</h2>
-    <p><strong>Name:</strong> @Model.OrderHeader.Name</p>
-    <p><strong>Phone:</strong> @Model.OrderHeader.Phone</p>
-    <p><strong>Pickup Time:</strong> @Model.OrderHeader.TimeOfPick.ToString("f")</p>
-</div>
+<div class="row g-4">
+    <!-- Items list -->
+    <div class="col-lg-7">
+        <div class="ff-table-wrap">
+            <table class="table ff-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Qty</th>
+                        <th>Unit</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cart in Model.ListofCart)
+                    {
+                        <tr>
+                            <td>@cart.Item.Title</td>
+                            <td>@cart.Count</td>
+                            <td>$@cart.Item.Price.ToString("0.00")</td>
+                            <td class="fw-600">$@((cart.Item.Price * cart.Count).ToString("0.00"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-<div>
-    <form asp-controller="Orders" asp-action="Create" method="post">
-        @* Include hidden fields for all necessary properties *@
-        <input type="hidden" asp-for="OrderHeader.Name" />
-        <input type="hidden" asp-for="OrderHeader.Phone" />
-        <input type="hidden" asp-for="OrderHeader.OrderTotal" />
-        <input type="hidden" asp-for="OrderHeader.TimeOfPick" />
+    <!-- Order details + confirm -->
+    <div class="col-lg-5">
+        <div class="ff-summary-box">
+            <h5 class="fw-bold mb-3">Order Info</h5>
+            <div class="mb-2 d-flex justify-content-between">
+                <span class="text-muted">Name</span>
+                <span>@Model.OrderHeader.Name</span>
+            </div>
+            <div class="mb-2 d-flex justify-content-between">
+                <span class="text-muted">Phone</span>
+                <span>@Model.OrderHeader.Phone</span>
+            </div>
+            <div class="mb-3 d-flex justify-content-between">
+                <span class="text-muted">Pick-up</span>
+                <span>@Model.OrderHeader.TimeOfPick.ToString("f")</span>
+            </div>
+            <hr class="ff-hr" />
+            <div class="d-flex justify-content-between mb-4">
+                <span class="fw-600">Order Total</span>
+                <span class="ff-summary-total">$@Model.OrderHeader.OrderTotal.ToString("0.00")</span>
+            </div>
 
-        @* Loop through ListofCart and include necessary hidden fields *@
-        @for (int i = 0; i < Model.ListofCart.Count; i++)
-        {
-            <input type="hidden" name="ListofCart[@i].Item.Id" value="@Model.ListofCart[i].Item.Id" />
-            <input type="hidden" name="ListofCart[@i].Item.Title" value="@Model.ListofCart[i].Item.Title" />
-            <input type="hidden" name="ListofCart[@i].Item.Description" value="@Model.ListofCart[i].Item.Description" />
-            <input type="hidden" name="ListofCart[@i].Item.Price" value="@Model.ListofCart[i].Item.Price" />
-            <input type="hidden" name="ListofCart[@i].Count" value="@Model.ListofCart[i].Count" />
-        }
-
-        <button type="submit" class="btn btn-primary"
-        @(Model.ListofCart == null || !Model.ListofCart.Any() ? "disabled" : "")>
-            Proceed to Pay
-        </button>
-
-    </form>
+            <form asp-controller="Orders" asp-action="Create" method="post">
+                <input type="hidden" asp-for="OrderHeader.Name" />
+                <input type="hidden" asp-for="OrderHeader.Phone" />
+                <input type="hidden" asp-for="OrderHeader.OrderTotal" />
+                <input type="hidden" asp-for="OrderHeader.TimeOfPick" />
+                @for (int i = 0; i < Model.ListofCart.Count; i++)
+                {
+                    <input type="hidden" name="ListofCart[@i].Item.Id"          value="@Model.ListofCart[i].Item.Id" />
+                    <input type="hidden" name="ListofCart[@i].Item.Title"       value="@Model.ListofCart[i].Item.Title" />
+                    <input type="hidden" name="ListofCart[@i].Item.Description" value="@Model.ListofCart[i].Item.Description" />
+                    <input type="hidden" name="ListofCart[@i].Item.Price"       value="@Model.ListofCart[i].Item.Price" />
+                    <input type="hidden" name="ListofCart[@i].Count"            value="@Model.ListofCart[i].Count" />
+                }
+                <button type="submit" class="btn btn-primary w-100"
+                        @(Model.ListofCart == null || !Model.ListofCart.Any() ? "disabled" : "")>
+                    <i class="fas fa-check-circle me-1"></i> Confirm Order
+                </button>
+            </form>
+        </div>
+    </div>
 </div>

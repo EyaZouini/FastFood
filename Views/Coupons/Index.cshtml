@@ -1,35 +1,23 @@
-﻿@model IEnumerable<FastFood.Models.Coupon>
-
+@model IEnumerable<FastFood.Models.Coupon>
 @{
     ViewData["Title"] = "Coupons";
 }
 
-<div class="container mt-4">
-    <h4>@ViewData["Title"]</h4>
-    <hr />
+<div class="ff-page-header">
+    <h1 class="ff-page-title">Coupons</h1>
+    <a asp-action="Create" class="btn btn-primary btn-sm">+ New Coupon</a>
+</div>
 
-
-    <table class="table table-striped table-bordered rounded mt-4">
-        <thead class="bg-secondary text-white">
+<div class="ff-table-wrap">
+    <table class="table ff-table">
+        <thead>
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Type)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Discount)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.MinimumAmount)
-                </th>
-                <th class="text-center">
-                    @Html.DisplayNameFor(model => model.CouponPicture)
-                </th>
-                <th class="text-center">
-                    @Html.DisplayNameFor(model => model.IsActive)
-                </th>
+                <th>Code</th>
+                <th>Type</th>
+                <th>Discount</th>
+                <th>Min. Order</th>
+                <th class="text-center">Picture</th>
+                <th class="text-center">Status</th>
                 <th class="text-center">Actions</th>
             </tr>
         </thead>
@@ -37,61 +25,45 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td class="align-middle">
-                        @Html.DisplayFor(modelItem => item.Title)
+                    <td class="fw-600">@item.Title</td>
+                    <td>@item.Type</td>
+                    <td>
+                        @if (item.Type == "Percent")
+                        {
+                            <span>@item.Discount%</span>
+                        }
+                        else
+                        {
+                            <span>$@item.Discount.ToString("0.00")</span>
+                        }
                     </td>
-                    <td class="align-middle">
-                        @Html.DisplayFor(modelItem => item.Type)
-                    </td>
-                    <td class="align-middle">
-                        @Html.DisplayFor(modelItem => item.Discount)
-                    </td>
-                    <td class="align-middle">
-                        @Html.DisplayFor(modelItem => item.MinimumAmount)
-                    </td>
-                    <td class="text-center align-middle">
+                    <td>$@item.MinimumAmount.ToString("0.00")</td>
+                    <td class="text-center">
                         @{
                             var base64 = Convert.ToBase64String(item.CouponPicture);
-                            var imgsrc = string.Format("data:image/jpg;base64,{0}", base64);
+                            var imgsrc = $"data:image/jpg;base64,{base64}";
                         }
-                        <img src="@imgsrc" height="50" width="50" style="border-radius:100%" />
+                        @if (item.CouponPicture.Length > 0)
+                        {
+                            <img src="@imgsrc" class="ff-cart-thumb" alt="@item.Title" />
+                        }
+                        else
+                        {
+                            <span class="text-muted small">—</span>
+                        }
                     </td>
-                    <td class="text-center align-middle">
-                        <div style="transform: scale(1.5);">
-                            @Html.DisplayFor(modelItem => item.IsActive) 
-                            </div>
+                    <td class="text-center">
+                        <span class="ff-badge @(item.IsActive ? "ff-badge-active" : "ff-badge-inactive")">
+                            @(item.IsActive ? "Active" : "Inactive")
+                        </span>
                     </td>
-                    <td class="text-center align-middle">
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary" style="width: 80px;">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-success" style="width: 80px;">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-secondary" style="width: 80px;">Delete</a>
+                    <td class="text-center">
+                        <a asp-action="Edit"    asp-route-id="@item.Id" class="btn btn-outline-primary  btn-sm btn-action">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm btn-action">Details</a>
+                        <a asp-action="Delete"  asp-route-id="@item.Id" class="btn btn-outline-danger   btn-sm btn-action">Delete</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-    <div class="text-center mt-3">
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
-    </div>
 </div>
-
-<style>
-    body {
-        background-color: #f8f9fa; /* Light gray background */
-        color: #343a40; /* Dark gray text */
-    }
-
-    h1 {
-        font-weight: bold;
-    }
-
-    .table {
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .btn {
-        margin-right: 5px;
-    }
-</style>
