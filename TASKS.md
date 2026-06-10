@@ -25,9 +25,4 @@
 ---
 
 ## Task 2 — Data Seeding (Scraping + CSV)
-**Status:** 🔄 In progress
-
-- [ ] Scrape food item images (mix: international + Tunisian)
-- [ ] Build CSV: Title, Description, Price, Category, SubCategory, ImageUrl
-- [ ] Write `CsvSeeder` that reads the CSV and populates the DB
-- [ ] Run tests ✅
+**Status:** ✅ Done → see CHANGELOG.md

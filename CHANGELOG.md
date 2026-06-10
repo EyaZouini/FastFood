@@ -5,6 +5,24 @@
 
 ---
 
+## [2026-06-10] Task 2 — Data Seeding (CSV)
+**Branch:** `feature/task-2-data-seeding` | **PR:** #7  
+**Files touched:** `Data/seed/food-items.csv` (new), `Data/CsvSeeder.cs` (new), `Data/DbInitializer.cs`, `FastFood.Tests/Data/CsvSeederTests.cs` (new)
+
+### What changed
+- **`Data/seed/food-items.csv`:** 24 food items, semicolon-delimited, with columns `Title;Description;Price;Category;SubCategory;ImageUrl`
+  - Fast Food: 5 items (Burgers, Sandwiches, Wraps)
+  - World Cuisine: 7 items (Pizza, Pasta, Sushi, Tacos)
+  - Tunisian Cuisine: 7 items (Couscous, Briks, Street Food, Soups, Grills)
+  - Desserts & Drinks: 5 items (Desserts, Juices)
+  - Image URLs reference free Unsplash CDN photos
+- **`CsvSeeder`:** reads CSV on first run, creates Categories + SubCategories on the fly, idempotent (skips if items already exist)
+- **`DbInitializer`:** calls `CsvSeeder.SeedFromCsvAsync` at app startup using `IWebHostEnvironment.ContentRootPath`
+- **5 new tests:** item count, category deduplication, idempotency, price parsing, malformed-line skipping
+- **Build:** 0 errors ✅ | **Tests:** 29/29 passing ✅
+
+---
+
 ## [2026-06-10] Subtask 1.5 — Admin Dashboard
 **Branch:** `feature/subtask-1.5-admin-dashboard` | **PR:** #6  
 **Files touched:** `Controllers/AdminController.cs` (new), `Services/IDashboardService.cs` (new), `Services/DashboardService.cs` (new), `ViewModels/DashboardViewModel.cs` (new), `Views/Admin/Dashboard.cshtml` (new), `FastFood.Tests/Services/DashboardServiceTests.cs` (new), `Program.cs`, `Views/Shared/_Layout.cshtml`
