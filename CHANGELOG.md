@@ -1,6 +1,7 @@
 # Changelog
 
 > All completed changes, in reverse chronological order.
+> Tests must pass before every merge — see `FastFood.Tests/`.
 
 ---
 
