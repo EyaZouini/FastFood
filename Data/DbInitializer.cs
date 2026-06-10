@@ -46,6 +46,9 @@ namespace FastFood.Data
             var csvPath = Path.Combine(env.ContentRootPath, "Data", "seed", "food-items.csv");
             if (File.Exists(csvPath))
                 await CsvSeeder.SeedFromCsvAsync(db, csvPath);
+
+            // Seed coupons, orders, and demo manager user
+            await OrderSeeder.SeedAsync(db, userManager);
         }
     }
 }

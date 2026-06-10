@@ -21,7 +21,8 @@
     {
         <div class="col-md-3 mb-4">
             <div class="card h-100">
-                <img src="@item.ImageUrl" class="card-img-top" alt="Item Image">
+                <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title"
+                     onerror="this.onerror=null;this.src='https://placehold.co/400x300/f8f9fa/adb5bd?text=No+Image'">
                 <div class="card-body">
                     <h5 class="card-title">@item.Title</h5>
                     <p class="card-text">
