@@ -5,6 +5,20 @@
 
 ---
 
+## [2026-06-10] Task 2.2 — Full DB Seed + Image Fixes
+**Branch:** `feature/task-2.2-orders-and-image-fixes` | **PR:** #8  
+**Files touched:** `Data/OrderSeeder.cs` (new), `Data/DbInitializer.cs`, `Data/seed/food-items.csv`, `FastFood.Tests/Data/OrderSeederTests.cs` (new), `Views/Home/Index.cshtml`, `Views/Home/Details.cshtml`
+
+### What changed
+- **Image fixes:** 4 Unsplash photo IDs were returning 404 — replaced with verified working URLs in both the CSV and the live DB directly
+- **onerror fallback:** all `<img>` tags in Index and Details views now show a neutral placeholder instead of broken alt text
+- **`OrderSeeder`:** creates 3 coupons (WELCOME10/SUMMER20/SAVE5), 1 Manager demo user (`manager@fastfood.com` / `Manager@123`), and 8 orders spread across the last 7 days with mixed statuses (Shipped, Approved, InProcess, Pending) — gives the Admin Dashboard chart real data to display
+- **`DbInitializer`:** calls `OrderSeeder.SeedAsync` after `CsvSeeder`
+- **5 new tests:** coupons seeded, orders seeded, idempotency, skip when no customer, order total calculation
+- **Build:** 0 errors ✅ | **Tests:** 34/34 passing ✅
+
+---
+
 ## [2026-06-10] Task 2 — Data Seeding (CSV)
 **Branch:** `feature/task-2-data-seeding` | **PR:** #7  
 **Files touched:** `Data/seed/food-items.csv` (new), `Data/CsvSeeder.cs` (new), `Data/DbInitializer.cs`, `FastFood.Tests/Data/CsvSeederTests.cs` (new)
