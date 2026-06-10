@@ -1,138 +1,41 @@
-﻿@model FastFood.Models.Cart
-
+@model FastFood.Models.Cart
 @{
     ViewData["Title"] = "Product Details";
 }
 
-<div class="container mt-4">
-    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
-
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h4>@Model.Item.Title Information :</h4>
-        </div>
-        <div class="card-body">
-            <form asp-action="Details" method="post">
-                <input type="hidden" name="ItemId" value="@Model.ItemId" />
-
-                <div class="row mb-3">
-                    <!-- Image Placeholder -->
-                    <div class="col-2 d-flex justify-content-center align-items-center">
-                        <img src="@Model.Item.ImageUrl" class="img-fluid rounded-circle" alt="@Model.Item.Title"
-                             onerror="this.onerror=null;this.src='https://placehold.co/200x200/f8f9fa/adb5bd?text=No+Image'" />
-                    </div>
-
-                    <div class="col-10">
-                        <div class="row">
-                            <div class="col-6">
-                                <div>
-                                    <label for="ItemTitle" class="form-label">Product Name:</label>
-                                    <input type="text" class="form-control uniform-width" id="ItemTitle" value="@Model.Item.Title" disabled />
-                                </div>
-                                <div>
-                                    <label for="ItemPrice" class="form-label">Item Price:</label>
-                                    <input type="text" class="form-control uniform-width" id="ItemPrice" value="$@Model.Item.Price" disabled />
-                                </div>
-                            </div>
-
-                            <div class="col-6">
-                                <label for="ItemDescription" class="form-label">Item Description:</label>
-                                <textarea class="form-control uniform-width" id="ItemDescription" rows="4" disabled>@Html.Raw(Model.Item.Description)</textarea>
-                            </div>
-                            <div class="col-6">
-                                <label for="ItemQuantity" class="form-label">Quantity:</label>
-                                <input type="number" asp-for="Count" class="form-control uniform-width" value="@Model.Count" min="1" required />
-                            </div>
-                            <div class="col-6">
-                                <label for="ItemSubCategory" class="form-label">Product SubCategory:</label>
-                                <input type="text" class="form-control uniform-width" id="ItemSubCategory" value="@Model.Item.SubCategory.Title" disabled />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="d-flex justify-content-end gap-2 mt-3">
-                    @if (User.IsInRole("Customer"))
-                    {
-                        <button type="submit" class="btn btn-primary uniform-button">Add to Cart</button>
-                    }
-                   
-                    <a asp-action="Index" class="btn btn-secondary uniform-button">Back to List</a>
-                </div>
-
-            </form>
-        </div>
-
-    </div>
+<div class="ff-page-header">
+    <h1 class="ff-page-title">Product Details</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">← Back to Menu</a>
 </div>
 
-<style>
-    body {
-        background-color: #f8f9fa; /* Fond gris clair */
-        color: #343a40; /* Texte gris foncé */
-    }
+<div class="row g-4 justify-content-center">
+    <div class="col-md-5">
+        <div class="ff-form-card p-0 overflow-hidden">
+            <img src="@Model.Item.ImageUrl" alt="@Model.Item.Title" class="w-100"
+                 style="height:300px;object-fit:cover;"
+                 onerror="this.onerror=null;this.src='https://placehold.co/600x300/f3f4f6/adb5bd?text=No+Image'" />
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="ff-form-card h-100 d-flex flex-column">
+            <h2 class="fw-bold mb-1">@Model.Item.Title</h2>
+            <span class="ff-price fs-4 mb-3">$@Model.Item.Price.ToString("0.00")</span>
+            <p class="text-muted mb-1"><strong>Category:</strong> @Model.Item.SubCategory.Title</p>
+            <p class="text-muted mb-3 lh-lg">@Model.Item.Description</p>
 
-    .uniform-button {
-        width: 150px; /* Ajustez la largeur selon vos besoins */
-    }
-
-
-    .card {
-        border-radius: 8px; /* Arrondir les coins de la carte */
-    }
-
-    .card-header {
-        font-weight: bold;
-        font-size: 1.25rem;
-    }
-
-    .form-label {
-        font-weight: bold;
-    }
-
-    .form-control {
-        border-radius: 5px;
-        padding: 7px;
-    }
-
-    .btn {
-        padding: 10px 20px;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
-        }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-    }
-
-    .uniform-width {
-        width: 100%; /* Remplir le conteneur */
-         
-    }
-
-
-        .btn-secondary:hover {
-            background-color: #5a6268;
-            border-color: #545b62;
-        }
-
-    /* Style de l'image */
-    .img-fluid {
-        max-width: 100%;
-        height: auto;
-    }
-
-    /* Bordure arrondie pour l'image */
-    .rounded-circle {
-        border-radius: 50%;
-    }
-</style>
+            <form asp-action="Details" method="post" class="mt-auto">
+                <input type="hidden" name="ItemId" value="@Model.ItemId" />
+                <div class="mb-3">
+                    <label class="form-label fw-500">Quantity</label>
+                    <input type="number" asp-for="Count" class="form-control" style="max-width:120px;" value="@Model.Count" min="1" required />
+                </div>
+                @if (User.IsInRole("Customer"))
+                {
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="fas fa-cart-plus me-1"></i> Add to Cart
+                    </button>
+                }
+            </form>
+        </div>
+    </div>
+</div>

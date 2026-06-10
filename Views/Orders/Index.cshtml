@@ -1,98 +1,83 @@
-﻿@model IEnumerable<FastFood.Models.OrderHeader>
-
+@model IEnumerable<FastFood.Models.OrderHeader>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Orders";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <!-- Title and Filtering Options -->
-    <div class="row p-3 align-items-center">
-        <div class="col-6">
-            <h4 class="fw-bold text-primary">List of Orders</h4>
-        </div>
-        <div class="col-6 text-end">
-            <span class="fw-bold">Payment Status:</span>
-            <a asp-controller="orders" asp-action="Index" asp-route-status="pending" class="text-decoration-none me-2">Pending</a>
-            <a asp-controller="orders" asp-action="Index" asp-route-status="approved" class="text-decoration-none me-2">Approved</a>
-            |
-            <span class="fw-bold">Order Status:</span>
-            <a asp-controller="orders" asp-action="Index" asp-route-status="underprocess" class="text-decoration-none me-2">Under Process</a>
-            <a asp-controller="orders" asp-action="Index" asp-route-status="shipped" class="text-decoration-none me-2">Shipped</a>
-            |
-            <a asp-controller="orders" asp-action="Index" asp-route-status="all" class="text-decoration-none">All</a>
-        </div>
+<div class="ff-page-header">
+    <h1 class="ff-page-title">Orders</h1>
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+        <span class="text-muted small fw-500">Filter:</span>
+        <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-secondary btn-sm">All</a>
+        <a asp-controller="Orders" asp-action="Index" asp-route-status="pending"      class="btn btn-sm ff-filter-btn pending">Pending</a>
+        <a asp-controller="Orders" asp-action="Index" asp-route-status="approved"     class="btn btn-sm ff-filter-btn approved">Approved</a>
+        <a asp-controller="Orders" asp-action="Index" asp-route-status="underprocess" class="btn btn-sm ff-filter-btn process">In Process</a>
+        <a asp-controller="Orders" asp-action="Index" asp-route-status="shipped"      class="btn btn-sm ff-filter-btn shipped">Shipped</a>
     </div>
+</div>
 
-    <!-- Orders Table -->
-    <table class="table table-striped table-bordered rounded mt-4">
-        <thead class="bg-secondary text-white">
+<div class="ff-table-wrap">
+    <table class="table ff-table">
+        <thead>
             <tr>
-                <th>@Html.DisplayNameFor(model => model.Name)</th>
-                <th>@Html.DisplayNameFor(model => model.Phone)</th>
-                <th>@Html.DisplayNameFor(model => model.OrderTotal)</th>
-                <th>@Html.DisplayNameFor(model => model.OrderStatus)</th>
-                <th>@Html.DisplayNameFor(model => model.PaymentStatus)</th>
-                <th class="text-center">Actions</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Total</th>
+                <th>Order Status</th>
+                <th>Payment</th>
+                <th class="text-center">Details</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
-                    <td class="align-middle">@Html.DisplayFor(modelItem => item.Name)</td>
-                    <td class="align-middle">@Html.DisplayFor(modelItem => item.Phone)</td>
-                    <td class="align-middle">@item.OrderTotal.ToString("C")</td>
-                    <td class="align-middle">@Html.DisplayFor(modelItem => item.OrderStatus)</td>
-                    <td class="align-middle">@Html.DisplayFor(modelItem => item.PaymentStatus)</td>
-                    <td class="text-center align-middle">
-                        <a asp-action="OrderDetails" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Details</a>
+                    <td>@item.Name</td>
+                    <td>@item.Phone</td>
+                    <td class="fw-600">$@item.OrderTotal.ToString("0.00")</td>
+                    <td>
+                        @{
+                            var oClass = item.OrderStatus switch {
+                                "Shipped"         => "ff-badge ff-badge-shipped",
+                                "Approved"        => "ff-badge ff-badge-approved",
+                                "UnderProcessing" => "ff-badge ff-badge-process",
+                                "Pending"         => "ff-badge ff-badge-pending",
+                                "Cancelled"       => "ff-badge ff-badge-cancelled",
+                                "Refunded"        => "ff-badge ff-badge-refunded",
+                                _                 => "ff-badge ff-badge-cancelled"
+                            };
+                        }
+                        <span class="@oClass">@item.OrderStatus</span>
+                    </td>
+                    <td>
+                        @{
+                            var pClass = item.PaymentStatus switch {
+                                "Approved" => "ff-badge ff-badge-approved",
+                                "Pending"  => "ff-badge ff-badge-pending",
+                                "Rejected" => "ff-badge ff-badge-cancelled",
+                                _          => "ff-badge ff-badge-cancelled"
+                            };
+                        }
+                        <span class="@pClass">@item.PaymentStatus</span>
+                    </td>
+                    <td class="text-center">
+                        <a asp-action="OrderDetails" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm btn-action">View</a>
                     </td>
                 </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr><td colspan="6" class="text-center text-muted py-4">No orders found.</td></tr>
             }
         </tbody>
     </table>
 </div>
 
 <style>
-    body {
-        background-color: #f8f9fa; /* Light gray background */
-        color: #343a40; /* Dark gray text */
-    }
-
-    h4 {
-        font-weight: bold;
-    }
-
-    .table {
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .text-decoration-none {s
-        text-decoration: none;
-    }
-
-    .fw-bold {
-        font-weight: bold;
-    }
-
-    .btn {
-        margin-right: 5px;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-
-    .text-primary {
-        color: #007bff !important;
-    }
+    .ff-filter-btn         { border-color: var(--ff-border); color: var(--ff-muted); background: #fff; }
+    .ff-filter-btn:hover   { background: var(--ff-bg); }
+    .ff-filter-btn.shipped { border-color:#DCFCE7; color:#166534; background:#DCFCE7; }
+    .ff-filter-btn.approved{ border-color:#DBEAFE; color:#1D4ED8; background:#DBEAFE; }
+    .ff-filter-btn.process { border-color:#FEF3C7; color:#92400E; background:#FEF3C7; }
+    .ff-filter-btn.pending { border-color:#FEE2E2; color:#991B1B; background:#FEE2E2; }
 </style>

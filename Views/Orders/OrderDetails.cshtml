@@ -1,96 +1,66 @@
-﻿@model FastFood.ViewModels.OrderDetailsViewModel
-
+@model FastFood.ViewModels.OrderDetailsViewModel
 @{
-    ViewData["Title"] = "OrderDetails";
+    ViewData["Title"] = "Order Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-<div class="container mt-4">
-    <h1>Order Header</h1>
-    <p><strong>Name:</strong> @Model.OrderHeader.Name</p>
-    <p><strong>Phone:</strong> @Model.OrderHeader.Phone</p>
-    <p><strong>Pickup Time:</strong> @Model.OrderHeader.TimeOfPick.ToString("f")</p>
-</div>
-<h4>Order Details</h4>
-<table class="table table-striped table-bordered rounded mt-4">
-    <thead>
-        <tr>
-            <th>Item</th>
-            <th>Item Name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var detail in Model.OrderDetails)
-        {
-            <tr>
-                <td class="align-middle">
-                    <div class="miniature-container me-3">
-                        <img src="@detail.Item.ImageUrl" class="circular-image" />
-                    </div>
-                </td>
-                <td>@detail.Name</td>
-                <td>@detail.Price.ToString("C")</td>
-                <td>@detail.Count</td>
-                <td>@(detail.Price * detail.Count)</td>
-            </tr>
-        }
-    </tbody>
-    
-</table>
-<h3>Total Amount: @Model.OrderHeader.OrderTotal.ToString("C")</h3>
-<div>
-    <a asp-action="Index" class="btn btn-sm btn-secondary">Back to List</a>
+<div class="ff-page-header">
+    <h1 class="ff-page-title">Order #@Model.OrderHeader.Id</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">← Back to Orders</a>
 </div>
 
-<style>
-    body {
-        background-color: #f8f9fa; /* Fond gris clair */
-        color: #343a40; /* Texte gris foncé */
-    }
+<div class="row g-4">
+    <!-- Order lines -->
+    <div class="col-lg-8">
+        <div class="ff-table-wrap">
+            <table class="table ff-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Name</th>
+                        <th>Unit Price</th>
+                        <th>Qty</th>
+                        <th class="text-end">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var detail in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@detail.Item.ImageUrl" class="ff-cart-thumb" alt="@detail.Name"
+                                     onerror="this.onerror=null;this.src='https://placehold.co/44x44/f3f4f6/adb5bd?text=?'" />
+                            </td>
+                            <td>@detail.Name</td>
+                            <td>$@detail.Price.ToString("0.00")</td>
+                            <td>@detail.Count</td>
+                            <td class="text-end fw-600">$@((detail.Price * detail.Count).ToString("0.00"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    h4 {
-        font-weight: bold;
-    }
-
-    .table {
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .btn {
-        margin-right: 5px;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    /* Miniature de produit */
-    .miniature-container {
-        width: 50px; /* Taille fixe pour la miniature */
-        height: 50px;
-        overflow: hidden;
-        border-radius: 50%; /* Transforme le conteneur en cercle */
-    }
-
-    .circular-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Ajuste l'image pour remplir le conteneur */
-        border: 1px solid #ddd; /* Bordure légère pour l'esthétique */
-        border-radius: 50%; /* Transforme l'image en cercle */
-    }
-
-    .fw-bold {
-        font-weight: bold;
-    }
-
-    .btn-lg {
-        padding: 10px 20px;
-    }
-</style>
+    <!-- Order info -->
+    <div class="col-lg-4">
+        <div class="ff-summary-box">
+            <h5 class="fw-bold mb-3">Order Info</h5>
+            <dl class="row mb-0 small">
+                <dt class="col-5 text-muted fw-normal">Customer</dt>
+                <dd class="col-7 fw-500">@Model.OrderHeader.Name</dd>
+                <dt class="col-5 text-muted fw-normal">Phone</dt>
+                <dd class="col-7">@Model.OrderHeader.Phone</dd>
+                <dt class="col-5 text-muted fw-normal">Pick-up</dt>
+                <dd class="col-7">@Model.OrderHeader.TimeOfPick.ToString("f")</dd>
+                <dt class="col-5 text-muted fw-normal">Order Date</dt>
+                <dd class="col-7">@Model.OrderHeader.OrderDate.ToString("dd MMM yyyy")</dd>
+            </dl>
+            <hr class="ff-hr" />
+            <div class="d-flex justify-content-between">
+                <span class="fw-600">Total</span>
+                <span class="ff-summary-total">$@Model.OrderHeader.OrderTotal.ToString("0.00")</span>
+            </div>
+        </div>
+    </div>
+</div>

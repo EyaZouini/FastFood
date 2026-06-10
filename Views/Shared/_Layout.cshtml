@@ -1,36 +1,33 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - FastFood</title>
+    <title>@ViewData["Title"] — FastFood</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/FastFood.styles.css" asp-append-version="true" />
-    <!-- Add Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">🍔 FastFood</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg ff-navbar">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">🍔 FastFood</a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                        aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <!-- Toujours visible -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
 
                         @if (User.IsInRole("Admin"))
                         {
-                            <!-- Visible uniquement pour Admin -->
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Dashboard">Dashboard</a>
                             </li>
@@ -55,27 +52,24 @@
                         }
                         @if (User.IsInRole("Customer"))
                         {
-                            <!-- Visible uniquement pour Customer -->
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Orders" asp-action="Index">My Orders</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Carts" asp-action="Index">
-                                    <i class="fas fa-shopping-cart"></i> <!-- Cart icon -->
+                                    <i class="fas fa-shopping-cart"></i> Cart
                                 </a>
                             </li>
-                            
                         }
                         @if (User.IsInRole("Manager"))
                         {
-                        <!-- Visible uniquement pour Manager -->
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Items" asp-action="Index">Items</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Coupons" asp-action="Index">Coupons</a>
-                        </li>
-                        <li class="nav-item">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Items" asp-action="Index">Items</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Coupons" asp-action="Index">Coupons</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Orders" asp-action="Index">Orders</a>
                             </li>
                         }
@@ -86,51 +80,32 @@
         </nav>
     </header>
 
-
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="container pb-5">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="bg-dark footer text-light py-2 ">
+    <footer class="ff-footer">
         <div class="container">
-            <div class="row">
-                <!-- Company Info -->
-                <div class="col-md-4 mb-0">
-                    <h6 class="fw-bold mb-1">🍔 FastFood</h6>
-                    <ul class="list-unstyled small mb-0 text-light " style="line-height: 1.2;"
-                    <li class="small mb-0">
-                        Delicious meals, delivered fast. Thank you for choosing us!
-                    </li>
-                    </ul>
+            <div class="row g-3 align-items-center">
+                <div class="col-md-4">
+                    <h6>🍔 FastFood</h6>
+                    <p class="mb-0 small">Delicious meals, delivered fast. Thank you for choosing us!</p>
                 </div>
-
-                <!-- Contact & Social -->
-                <div class="col-md-4 mb-0">
-                    <h6 class="fw-bold mb-1">Contact</h6>
-                    <ul class="list-unstyled small mb-0" style="line-height: 1.4;">
-                        <li class="small mb-0">
-                            📍 7 rue Monji Bali, Souuse, Tunisie 📞
-                            <a href="tel:+216 55 338 226" class=" small text-light text-decoration-none">
-                                +216 55 338 226
-                            </a>
-                        </li>
-                    </ul>
+                <div class="col-md-4">
+                    <h6>Contact</h6>
+                    <p class="mb-0 small">
+                        📍 7 rue Monji Bali, Sousse, Tunisie<br>
+                        📞 <a href="tel:+21655338226">+216 55 338 226</a>
+                    </p>
                 </div>
-
-                <!-- Quick Link -->
-                <div class="col-md-4 mb-0 text-md-end text-center">
-                    <ul class="list-unstyled small mb-0 text-md-end text-center" style="line-height: 1.4;"
-                    </li class="small mb-0">
-                    &copy; 2024 FastFood. All rights reserved.
-                </li>
-                     </ul>
+                <div class="col-md-4 text-md-end">
+                    <p class="copy mb-0">© 2024 FastFood. All rights reserved.</p>
                 </div>
             </div>
         </div>
     </footer>
-
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

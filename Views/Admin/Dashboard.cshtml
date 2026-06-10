@@ -1,99 +1,83 @@
 @model FastFood.ViewModels.DashboardViewModel
 @{
-    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-    <h2 class="fw-bold mb-0">Admin Dashboard</h2>
+<div class="ff-page-header">
+    <h1 class="ff-page-title">Dashboard</h1>
     <span class="text-muted small">@DateTime.Now.ToString("dddd, MMMM dd yyyy")</span>
 </div>
 
-<!-- KPI Cards -->
+<!-- KPI cards -->
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-                <div class="rounded-circle bg-primary bg-opacity-10 p-3">
-                    <i class="fas fa-dollar-sign fa-lg text-primary"></i>
-                </div>
-                <div>
-                    <div class="text-muted small">Revenue Today</div>
-                    <div class="fw-bold fs-5">$@Model.RevenueToday.ToString("0.00")</div>
-                </div>
+        <div class="ff-summary-box d-flex align-items-center gap-3">
+            <div class="ff-kpi-icon ff-kpi-icon-green">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div>
+                <div class="text-muted small">Revenue Today</div>
+                <div class="fw-700 fs-5">$@Model.RevenueToday.ToString("0.00")</div>
             </div>
         </div>
     </div>
     <div class="col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-                <div class="rounded-circle bg-success bg-opacity-10 p-3">
-                    <i class="fas fa-calendar-alt fa-lg text-success"></i>
-                </div>
-                <div>
-                    <div class="text-muted small">Revenue This Month</div>
-                    <div class="fw-bold fs-5">$@Model.RevenueThisMonth.ToString("0.00")</div>
-                </div>
+        <div class="ff-summary-box d-flex align-items-center gap-3">
+            <div class="ff-kpi-icon ff-kpi-icon-blue">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div>
+                <div class="text-muted small">Revenue This Month</div>
+                <div class="fw-700 fs-5">$@Model.RevenueThisMonth.ToString("0.00")</div>
             </div>
         </div>
     </div>
     <div class="col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-                <div class="rounded-circle bg-warning bg-opacity-10 p-3">
-                    <i class="fas fa-chart-line fa-lg text-warning"></i>
-                </div>
-                <div>
-                    <div class="text-muted small">Total Revenue</div>
-                    <div class="fw-bold fs-5">$@Model.RevenueTotal.ToString("0.00")</div>
-                </div>
+        <div class="ff-summary-box d-flex align-items-center gap-3">
+            <div class="ff-kpi-icon ff-kpi-icon-amber">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div>
+                <div class="text-muted small">Total Revenue</div>
+                <div class="fw-700 fs-5">$@Model.RevenueTotal.ToString("0.00")</div>
             </div>
         </div>
     </div>
     <div class="col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body d-flex align-items-center gap-3">
-                <div class="rounded-circle bg-info bg-opacity-10 p-3">
-                    <i class="fas fa-shopping-bag fa-lg text-info"></i>
-                </div>
-                <div>
-                    <div class="text-muted small">Total Orders</div>
-                    <div class="fw-bold fs-5">@Model.TotalOrders <span class="fs-6 fw-normal text-muted">(today: @Model.OrdersToday)</span></div>
+        <div class="ff-summary-box d-flex align-items-center gap-3">
+            <div class="ff-kpi-icon ff-kpi-icon-purple">
+                <i class="fas fa-shopping-bag"></i>
+            </div>
+            <div>
+                <div class="text-muted small">Total Orders</div>
+                <div class="fw-700 fs-5">
+                    @Model.TotalOrders
+                    <span class="text-muted fs-6 fw-normal ms-1">(today: @Model.OrdersToday)</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Charts row -->
-<div class="row g-3 mb-4">
-    <!-- Orders per day chart -->
+<!-- Charts -->
+<div class="row g-3">
     <div class="col-lg-7">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-white border-0 pt-3 pb-0">
-                <h6 class="fw-bold mb-0">Orders — Last 7 Days</h6>
-            </div>
-            <div class="card-body">
-                <canvas id="ordersChart" height="120"></canvas>
-            </div>
+        <div class="ff-summary-box">
+            <h6 class="fw-700 mb-3">Orders — Last 7 Days</h6>
+            <canvas id="ordersChart" height="110"></canvas>
         </div>
     </div>
-
-    <!-- Top items chart -->
     <div class="col-lg-5">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-header bg-white border-0 pt-3 pb-0">
-                <h6 class="fw-bold mb-0">Top 5 Most Ordered Items</h6>
-            </div>
-            <div class="card-body">
-                @if (Model.TopItemNames.Count == 0)
-                {
-                    <p class="text-muted text-center mt-4">No order data yet.</p>
-                }
-                else
-                {
-                    <canvas id="topItemsChart" height="180"></canvas>
-                }
-            </div>
+        <div class="ff-summary-box">
+            <h6 class="fw-700 mb-3">Top 5 Most Ordered Items</h6>
+            @if (Model.TopItemNames.Count == 0)
+            {
+                <p class="text-muted text-center mt-4 mb-0">No order data yet.</p>
+            }
+            else
+            {
+                <canvas id="topItemsChart" height="160"></canvas>
+            }
         </div>
     </div>
 </div>
@@ -101,16 +85,17 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
-        // Orders per day bar chart
-        const ordersCtx = document.getElementById('ordersChart').getContext('2d');
-        new Chart(ordersCtx, {
+        Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+        Chart.defaults.color = '#6B7280';
+
+        new Chart(document.getElementById('ordersChart').getContext('2d'), {
             type: 'bar',
             data: {
                 labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.OrdersPerDayLabels)),
                 datasets: [{
                     label: 'Orders',
                     data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.OrdersPerDayCounts)),
-                    backgroundColor: 'rgba(13, 110, 253, 0.7)',
+                    backgroundColor: 'rgba(22,163,74,.75)',
                     borderRadius: 6,
                     borderSkipped: false
                 }]
@@ -118,31 +103,22 @@
             options: {
                 responsive: true,
                 plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, ticks: { stepSize: 1 } }
-                }
+                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#F3F4F6' } },
+                          x: { grid: { display: false } } }
             }
         });
 
-        // Top items horizontal bar chart
         @if (Model.TopItemNames.Count > 0)
         {
             <text>
-            const topCtx = document.getElementById('topItemsChart').getContext('2d');
-            new Chart(topCtx, {
+            new Chart(document.getElementById('topItemsChart').getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TopItemNames)),
                     datasets: [{
                         label: 'Qty sold',
                         data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TopItemCounts)),
-                        backgroundColor: [
-                            'rgba(25,135,84,0.75)',
-                            'rgba(13,202,240,0.75)',
-                            'rgba(255,193,7,0.75)',
-                            'rgba(220,53,69,0.75)',
-                            'rgba(111,66,193,0.75)'
-                        ],
+                        backgroundColor: ['rgba(22,163,74,.75)','rgba(37,99,235,.75)','rgba(217,119,6,.75)','rgba(220,38,38,.75)','rgba(124,58,237,.75)'],
                         borderRadius: 6,
                         borderSkipped: false
                     }]
@@ -151,9 +127,8 @@
                     indexAxis: 'y',
                     responsive: true,
                     plugins: { legend: { display: false } },
-                    scales: {
-                        x: { beginAtZero: true, ticks: { stepSize: 1 } }
-                    }
+                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#F3F4F6' } },
+                              y: { grid: { display: false } } }
                 }
             });
             </text>
