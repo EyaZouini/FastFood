@@ -11,15 +11,7 @@
 **Status:** ✅ Done → see CHANGELOG.md
 
 ### Subtask 1.2 — Set Up Test Project
-**Status:** 🔲 Not started  
-**Why first:** Tests must exist before we refactor — they catch regressions on every future subtask.
-
-- [ ] Create `FastFood.Tests` xUnit project
-- [ ] Add to solution
-- [ ] Install: `xunit`, `Moq`, `Microsoft.EntityFrameworkCore.InMemory`
-- [ ] Write first tests: `ClaimsHelperTests` (already built in 1.1)
-- [ ] Write model validation tests (Item, Coupon, OrderHeader)
-- [ ] Confirm `dotnet test` passes — becomes the gate before every merge
+**Status:** ✅ Done → see CHANGELOG.md
 
 ### Subtask 1.3 — Fix Nullable Warnings
 **Status:** 🔲 Not started  

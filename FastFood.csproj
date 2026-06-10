@@ -23,4 +23,11 @@
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="FastFood.Tests\**" />
+    <Content Remove="FastFood.Tests\**" />
+    <EmbeddedResource Remove="FastFood.Tests\**" />
+    <None Remove="FastFood.Tests\**" />
+  </ItemGroup>
+
 </Project>
