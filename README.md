@@ -1,5 +1,7 @@
 # FastFood — ASP.NET Core MVC
 
+![CI](https://github.com/EyaZouini/FastFood/actions/workflows/ci.yml/badge.svg)
+
 A full-stack food ordering web application, used as a hands-on experiment in **agentic AI-assisted software development**.
 
 ---
